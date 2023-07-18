@@ -12,6 +12,14 @@ module.exports = {
         display: ["var(--font-sf)", "system-ui", "sans-serif"],
         default: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
+      colors: {
+        'red':{
+          DEFAULT:'#FF0000',
+          500: '#F43F5E'
+        },
+        'black':'#000000',
+        'white':'#FFFFFF',
+      },
       animation: {
         // Fade up and down
         "fade-up": "fade-up 0.5s",

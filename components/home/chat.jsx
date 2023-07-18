@@ -8,7 +8,7 @@ import cx from 'classnames'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
-
+import Record from './recordmessage'
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
@@ -25,6 +25,11 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
 
   const shouldShowLoadingIcon = loading || isGeneratingQuestion
   const inputActive = input !== '' && !shouldShowLoadingIcon
+  
+
+  const handleStop = async (blobUrl) => {
+    
+  };  
 
   const generateJeopardyQuestion = async () => {
     setIsGeneratingQuestion(true)
@@ -91,100 +96,81 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
             }}
             disabled={isGeneratingQuestion}
           />
-          <button
+
+            {input.trim() === '' ? (
+              <Record handleStop={handleStop} />
+            ) : (
+            <button
             className={cx(
-              shouldShowLoadingIcon && "hover:bg-inherit hover:text-inhert",
               inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
-              "absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors")}
+              "absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors"
+            )}
             type="submit"
             onClick={() => {
-              sendMessage(input)
-              setInput('')
+              sendMessage(input);
+              setInput('');
             }}
-            disabled={shouldShowLoadingIcon}
+            disabled={input.trim() === ''}
           >
-            {shouldShowLoadingIcon
-              ? <div className="h-6 w-6 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
-              : <div className={cx(inputActive && "text-white", "w-6 h-6")}>
+            
+              <div className={cx(inputActive && "text-white", "w-6 h-6")}>
                 <PaperAirplaneIcon />
               </div>
-            }
+            
           </button>
+            )}
         </div>
       </div>
     </div>
   )
 }
 
+
 const useMessages = () => {
-  const [messages, setMessages] = useState(initialMessages)
+  const [messages, setMessages] = useState(initialMessages);
   const [isMessageStreaming, setIsMessageStreaming] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // send message to API /api/chat endpoint
   const sendMessage = async (newMessage) => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
+
     const newMessages = [
       ...messages,
       { role: 'user', content: newMessage },
-    ]
-    setMessages(newMessages)
-    const last10messages = newMessages.slice(-10) // remember last 10 messages
+    ];
 
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: last10messages,
-      }),
-    })
+    setMessages(newMessages);
 
-    console.log('Edge function returned.')
+    const lastUserMessage = newMessages
+    .filter((message) => message.role === 'user')
+    .pop();
+    const last10messages = newMessages.slice(-10);
 
-    if (!response.ok) {
-      console.log(response)
-      setError(response.statusText)
-      setLoading(false)
-      return
+    
+    try {
+      const response = await axios.post('http://localhost:8000/api/test', {
+          query: lastUserMessage.content,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }); 
+
+        const responseData = response.data;
+        const assistantMessage = { role: 'assistant', content: responseData.msg };
+    
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+        setLoading(true)
+
+      setIsMessageStreaming(false);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-
-    // This data is a ReadableStream
-    const data = response.body
-    if (!data) {
-      return
-    }
-
-    // This data is a ReadableStream
-
-    setIsMessageStreaming(true)
-
-    const reader = data.getReader()
-    const decoder = new TextDecoder()
-    let done = false
-
-    let lastMessage = ''
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-      done = doneReading
-      const chunkValue = decoder.decode(value)
-
-      lastMessage = lastMessage + chunkValue
-
-      setMessages([
-        ...newMessages,
-        { role: 'assistant', content: lastMessage },
-      ])
-
-      setLoading(false)
-    }
-
-    setIsMessageStreaming(false)
-  }
+  };
 
   return {
     messages,
@@ -192,8 +178,9 @@ const useMessages = () => {
     loading,
     error,
     sendMessage,
-  }
-}
+  };
+};
+
 
 export default function Chat() {
   const [input, setInput] = useState('')

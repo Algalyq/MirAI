@@ -44,7 +44,7 @@
   },
   "include": [
     "**/*.js",
-    "**/*.jsx",
+    "**/*.jsx", "components/home/recordmessage.jsx", "components/home/recordicon.tsx", "components/home/landing.jsx", "components/home/chat.jsx",
   ],
   "exclude": [
     "node_modules"

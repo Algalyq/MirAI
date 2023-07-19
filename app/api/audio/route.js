@@ -4,21 +4,16 @@ import axios from 'axios';
 export async function POST(req) {
   try {
     const { body } = req;
-    const formData = new FormData();
+    const formData = new FormData(body);
 
-    // Iterate over the form data fields and append them to the new FormData object
-    for (const key in body) {
-      if (body.hasOwnProperty(key)) {
-        formData.append(key, body[key]);
-      }
-    }
-    const response = await axios.post('http://localhost:8000/api/audio', formData, {
+    const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
+    };
+    console.log(formData)
+    const response = await axios.post('http://localhost:8000/api/audio', formData,config);
 
-    // Handle the response from the API endpoint
     console.log('Response:', response.data);
 
     return new NextResponse({
@@ -26,8 +21,7 @@ export async function POST(req) {
       body: 'Audio uploaded successfully',
     });
   } catch (error) {
-    // Handle errors
-    // console.error('Error uploading audio:', error);
+    console.error('Error uploading audio:', error);
 
     return new NextResponse({
       status: 500,

@@ -1,6 +1,6 @@
 import "./globals.css";
 import Script from 'next/script';
-import { Analytics } from "@vercel/analytics/react";
+// import { Analytics } from "@vercel/analytics/react";
 import cx from "classnames";
 import { sfPro, inter } from "./fonts";
 import Nav from "@/components/layout/nav";
@@ -48,7 +48,7 @@ export default async function RootLayout({
         <main className="flex min-h-screen w-full flex-col items-center justify-center pt-16 relative">
           {children}
         </main>
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

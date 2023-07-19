@@ -1,67 +1,170 @@
+'use client'
 import React, { useState } from 'react';
-import { ReactMic } from 'react-mic';
+import axios from 'axios';
+
 
 const AudioRecorder = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState('');
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [recording, setRecording] = useState(false);
+  const [audioChunks, setAudioChunks] = useState([]);
+  const [audioBlob, setAudioBlob] = useState(null);
 
   const handleStartRecording = () => {
-    setIsRecording(true);
-  };
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        const recorder = new MediaRecorder(stream);
+        setMediaRecorder(recorder);
+        const chunks = [];
 
-  const handleStopRecording = () => {
-    setIsRecording(false);
-  };
+        recorder.addEventListener('dataavailable', event => {
+          chunks.push(event.data);
+        });
 
-  const handleAudioData = (recordedBlob) => {
-    const audioBlob = new Blob([recordedBlob.blob], { type: 'audio/wav' });
-    const url = URL.createObjectURL(audioBlob);
-    setAudioUrl(url);
+        recorder.addEventListener('stop', () => {
+          const blob = new Blob(chunks, { type: 'audio/wav' });
+          setAudioBlob(blob);
+        });
 
-   console.log("audio", audioBlob)
-    // Create a FormData object and append the audio blob to it
-    const formData = new FormData();
-    formData.append('audio', audioBlob);
-   
-    // Send the audio data to the backend
-    fetch('/api/audio', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Audio uploaded successfully');
-        } else {
-          console.error('Error uploading audio:', response.statusText);
-        }
+        recorder.start();
+        setRecording(true);
       })
-      .catch((error) => {
-        console.error('Error uploading audio:', error);
+      .catch(error => {
+        console.error('Error accessing microphone:', error);
       });
   };
 
+  const handleStopRecording = () => {
+    if (mediaRecorder && recording) {
+      mediaRecorder.stop();
+      setRecording(false);
+    }
+  };
+
+
+
+  const handleUpload = () => {
+    if (audioBlob && audioBlob instanceof Blob) {
+      const formData = new FormData();
+      formData.append('audio', audioBlob);
+  
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+  
+      axios
+        .post('/api/audio', formData, config)
+        .then(response => {
+          // Handle response from the server
+        })
+        .catch(error => {
+          console.error('Error uploading audio:', error);
+        });
+    } else {
+      console.error('Invalid audioBlob:', audioBlob);
+    }
+  };
 
   return (
     <div>
-      <ReactMic
-        record={isRecording}
-        className="sound-wave"
-        onStop={handleAudioData}
-        mimeType="audio/wav"
-      />
-
-      {isRecording ? (
+      {recording ? (
         <button onClick={handleStopRecording}>Stop Recording</button>
       ) : (
         <button onClick={handleStartRecording}>Start Recording</button>
       )}
-
-      {audioUrl && <audio src={audioUrl} controls />}
+      <button onClick={handleUpload} disabled={!audioBlob}>
+        Upload Audio
+      </button>
     </div>
   );
 };
 
 export default AudioRecorder;
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react';
+// import { ReactMic } from 'react-mic';
+// import Recordicon from './recordicon';
+
+// const AudioRecorder = () => {
+//   const [isRecording, setIsRecording] = useState(false);
+//   const [audioUrl, setAudioUrl] = useState('');
+
+//   const handleStartRecording = () => {
+//     setIsRecording(true);
+//   };
+
+//   const handleStopRecording = () => {
+//     setIsRecording(false);
+//   };
+
+//   const handleAudioData = (recordedBlob) => {
+//     const audioBlob = new Blob([recordedBlob.blob], { type: 'audio/wav' });
+//     const url = URL.createObjectURL(audioBlob);
+//     setAudioUrl(url);
+
+//    console.log("audio", audioBlob)
+//     // Create a FormData object and append the audio blob to it
+//     const formData = new FormData();
+//     formData.append('audio', audioBlob);
+   
+//     // Send the audio data to the backend
+//     fetch('/api/audio', {
+//       method: 'POST',
+//       body: formData,
+//     })
+//       .then((response) => {
+//         if (response.ok) {
+//           console.log('Audio uploaded successfully');
+//         } else {
+//           console.error('Error uploading audio:', response.statusText);
+//         }
+//       })
+//       .catch((error) => {
+//         console.error('Error uploading audio:', error);
+//       });
+//   };
+
+
+//   return (
+//     <div>
+//       <ReactMic
+//         record={isRecording}
+//         // className="sound-wave"
+//         onStop={handleAudioData}
+//         mimeType="audio/wav"
+//       />
+
+//       {/* {isRecording ? (
+//         <button onClick={handleStopRecording}>Stop Recording</button>
+//       ) : (
+//         <button onClick={handleStartRecording}>Start Recording</button>
+//       )} */}
+//       <button 
+//           onMouseDown={handleStartRecording}
+//           onMouseUp={handleStopRecording}>
+      
+//                   <Recordicon
+//                     classText={
+//                       isRecording ? 
+//                         ( "animate-pulse text-red-500")
+//                         : ("text-sky-500")
+//                     }
+//                   />
+//       </button>
+//       {audioUrl && <audio src={audioUrl} controls />}
+//     </div>
+//   );
+// };
+
+// export default AudioRecorder;
 
 
 
@@ -114,19 +217,19 @@ export default AudioRecorder;
 //       render={({ status, startRecording, stopRecording }) => (
 //         <div className="bg-white absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors">
           // <button
-          //   onMouseDown={startRecording}
-          //   onMouseUp={stopRecording}
+            // onMouseDown={startRecording}
+            // onMouseUp={stopRecording}
           //   onTouchStart={startRecording}
           //   onTouchEnd={stopRecording}
           //   className="bg-white rounded-full"
           // >
-          //   <Recordicon
-          //     classText={
-          //       status === "recording"
-          //         ? "animate-pulse text-red-500"
-          //         : "text-sky-500"
-          //     }
-          //   />
+            // <Recordicon
+            //   classText={
+            //     status === "recording"
+            //       ? "animate-pulse text-red-500"
+            //       : "text-sky-500"
+            //   }
+            // />
           // </button>
 //         </div>
 //       )}

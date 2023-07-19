@@ -27,9 +27,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
-    "react-media-recorder": "^1.6.6",
     "react-mic": "^12.4.6",
-    "react-speech-recognition": "^3.10.0",
     "react-wrap-balancer": "^0.3.0",
     "wavefile": "^11.0.0"
   },

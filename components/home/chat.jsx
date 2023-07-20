@@ -1,4 +1,5 @@
 'use client'
+require('dotenv').config();
 
 import { throttle } from '@/lib/throttle'
 import { useState, useRef, useEffect, useCallback } from 'react'
@@ -12,8 +13,8 @@ import toast, { Toaster } from 'react-hot-toast'
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
-    role: 'assistant',
-    content: 'Hi! I am a Jeopardy expert. Fire away with trivia questions!',
+    role: 'system',
+    content: 'Сәлем! Мен MirAI жасанды интелекттімін. Сұрақтарыңызға жауап беремін!',
   },
 ]
 
@@ -25,11 +26,6 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
 
   const shouldShowLoadingIcon = loading || isGeneratingQuestion
   const inputActive = input !== '' && !shouldShowLoadingIcon
-  
-
-  const handleStop = async (blobUrl) => {
-    
-  };  
 
   const generateJeopardyQuestion = async () => {
     setIsGeneratingQuestion(true)
@@ -74,7 +70,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
       >
         <div className="w-4 h-4">
           <AcademicCapIcon />
-        </div> {'Generate a Jeopardy question for me'}
+        </div> {'Сұрақтарға мысал'}
       </button>
       <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
         <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
@@ -96,9 +92,6 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
             }}
             disabled={isGeneratingQuestion}
           />
-
-            {/* {input.trim() === '' ? ( */}
-            {/* ) : ( */}
             <button
             className={cx(
               inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
@@ -149,14 +142,17 @@ const useMessages = () => {
 
     
     try {
-      const response = await axios.post('http://localhost:8000/api/test', {
+        const axios = require('axios');
+
+        const apiUrl = process.env.BASE_URL;
+        
+        const response = await axios.post(`${apiUrl}/api/llm`, {
           query: lastUserMessage.content,
         }, {
           headers: {
             'Content-Type': 'application/json',
           },
-        }); 
-
+        });
         const responseData = response.data;
         const assistantMessage = { role: 'assistant', content: responseData.msg };
     

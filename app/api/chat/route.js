@@ -13,7 +13,7 @@ export async function POST(req) {
   const userContent = userMessage.content;
   console.log(msg)
   
-  const response = await fetch('http://localhost:8000/api/test', {
+  const response = await fetch('http://localhost:8000/api/llm', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

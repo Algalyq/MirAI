@@ -50,7 +50,7 @@ const SignInModal = ({
                     width={20}
                     height={20}
                   />
-                  <h3 className="font-display text-2xl font-bold">Sign In</h3>
+                  <h3 className="font-display text-2xl font-bold">Тіркелу</h3>
                 </div>
 
                 <div className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 md:px-16">
@@ -70,7 +70,7 @@ const SignInModal = ({
                     ) : (
                       <>
                         <Google className="h-5 w-5" />
-                        <p>Sign In with Google</p>
+                        <p>Google арқылы тіркелу</p>
                       </>
                     )}
                   </button>

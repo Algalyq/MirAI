@@ -1,5 +1,7 @@
 
 'use client'
+require('dotenv').config();
+
 import React, { useState } from 'react';
 import { CommandLineIcon, UserIcon } from '@heroicons/react/24/outline'
 import Recordicon from './recordicon'
@@ -50,9 +52,13 @@ const speakAssistantMessage = (content) => {
   window.speechSynthesis.speak(assistantUtterance);
 
   // Now, send the text data to the backend using fetch API
-  const backendUrl = 'http://localhost:8000/api/text-audio'; // Replace with your actual backend API URL
+  const backendUrl = 'http://localhost:8000/api/audio'; // Replace with your actual backend API URL
 
-  fetch(backendUrl, {
+  const axios = require('axios');
+
+  const apiUrl = process.env.BASE_URL;
+        
+  fetch(`${apiUrl}/api/audio`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -98,7 +104,7 @@ const speakAssistantMessage = (content) => {
         className="relative m-auto flex p-4 text-base md:max-w-2xl gap-2 md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl"
       >
         <div className="min-w-[30px]">
-          {role === 'assistant'
+          {role === 'assistant' || role === 'system'
             ? (
               <CommandLineIcon />
             )
@@ -118,12 +124,13 @@ const speakAssistantMessage = (content) => {
             onClick={() => speakAssistantMessage(content)}
             disabled={isPlaying || isLoading} // Disable the button when playing or waiting for response
           >
-            {isLoading ?   <Recordicon  classText={
-                isPlaying === true
-                  ? "animate-pulse text-red-500"
-                  : "text-sky-500"
-              }
-            />:<LoadIcon/> 
+            {isLoading ?  <LoadIcon/> 
+            :
+            <Recordicon  classText={
+              isPlaying === true
+                ? "animate-pulse text-red-500"
+                : "text-sky-500"
+            }/>
             }
           </button>
         )}

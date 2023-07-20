@@ -21,14 +21,14 @@ export default function NavBar({ session }) {
       >
         <div className="mx-5 flex h-16 max-w-screen-xl items-center justify-between xl:mx-auto">
           <Link href="/" className="flex items-center font-display text-2xl">
-            <Image
+            {/* <Image
               src="/n17r.png"
               alt="N17R logo"
               width="30"
               height="30"
               className="mr-2 rounded-sm"
-            ></Image>
-            <p>My First Project</p>
+            ></Image> */}
+            <p>MIRAI</p>
           </Link>
           <div>
             {session ? (
@@ -38,7 +38,7 @@ export default function NavBar({ session }) {
                 className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-black"
                 onClick={() => setShowSignInModal(true)}
               >
-                Sign In
+                Тіркелу
               </button>
             )}
           </div>

@@ -1,7 +1,7 @@
 
 import Balancer from "react-wrap-balancer";
 import { DEPLOY_URL } from "@/lib/constants";
-
+import Content from './content'
 export default function Landing() {
   return (
     <>
@@ -10,17 +10,19 @@ export default function Landing() {
           className="animate-fade-up bg-gradient-to-br from-black to-stone-500 bg-clip-text text-center font-display text-4xl font-bold tracking-[-0.02em] text-transparent opacity-0 drop-shadow-sm md:text-7xl md:leading-[5rem]"
           style={{ animationDelay: "0.15s", animationFillMode: "forwards" }}
         >
-          <Balancer>Meet your AI Jeopardy expert</Balancer>
+          <Balancer>Жеке  сөйлесіңіз</Balancer>
         </h1>
         <p
           className="mt-6 animate-fade-up text-center text-gray-500 opacity-0 md:text-xl"
           style={{ animationDelay: "0.25s", animationFillMode: "forwards" }}
         >
           <Balancer>
-            AI-powered Jeopardy expert that can answer any Jeopardy questions you throw him.
+          Жасанды интеллектке негізделген MirAI сарапшысы, ол сіз қоятын кез келген сұрақтарға жауап бере алады.
           </Balancer>
         </p>
-        <div
+
+
+        {/* <div
           className="mx-auto mt-6 flex animate-fade-up items-center justify-center space-x-5 opacity-0"
           style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}
         >
@@ -46,8 +48,11 @@ export default function Landing() {
             </svg>
             <p>Deploy to Vercel</p>
           </a>
-        </div>
+        </div> */}
       </div>
+
+
+      {/* <Content/> */}
     </>
   )
 }

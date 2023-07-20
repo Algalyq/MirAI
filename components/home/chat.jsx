@@ -18,6 +18,9 @@ export const initialMessages = [
   },
 ]
 
+
+const  BASE_URL  = process.env.OPENAI_API_KEY;
+console.log(BASE_URL)
 const InputMessage = ({ input, setInput, sendMessage, loading }) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
@@ -142,11 +145,11 @@ const useMessages = () => {
 
     
     try {
-        const axios = require('axios');
-
-        const apiUrl = process.env.BASE_URL;
-        
-        const response = await axios.post(`${apiUrl}/api/llm`, {
+      const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
+      const url = 'https://backend-project-5m5f.onrender.com'
+    
+            
+        const response = await axios.post(`${url}/api/llm`, {
           query: lastUserMessage.content,
         }, {
           headers: {

@@ -52,13 +52,11 @@ const speakAssistantMessage = (content) => {
   window.speechSynthesis.speak(assistantUtterance);
 
   // Now, send the text data to the backend using fetch API
-  const backendUrl = 'http://localhost:8000/api/audio'; // Replace with your actual backend API URL
+  const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
+  const url = 'https://backend-project-5m5f.onrender.com'
 
-  const axios = require('axios');
-
-  const apiUrl = process.env.BASE_URL;
         
-  fetch(`${apiUrl}/api/audio`, {
+  fetch(`${url}/api/audio`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

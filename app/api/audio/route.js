@@ -4,15 +4,14 @@ import axios from 'axios';
 export async function POST(req) {
   try {
     const { body } = req;
+
+    if (!body || typeof body !== 'object') {
+      throw new Error('Invalid request body. Expected object or FormData.');
+    }
+
     const formData = new FormData(body);
 
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-    console.log(formData)
-    const response = await axios.post('http://localhost:8000/api/audio', formData,config);
+    const response = await axios.post('http://localhost:8000/api/audio', formData);
 
     console.log('Response:', response.data);
 

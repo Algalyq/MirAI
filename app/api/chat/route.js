@@ -22,8 +22,10 @@ export async function POST(req) {
   });
 
   const responseData = await response.json();
-  console.log(responseData)
-  
+  // console.log(responseData)
+  // data = {
+  //   "query": "Test"
+  // }
   // Return the response from the backend
   return {
     status: response.status,

@@ -8,7 +8,7 @@ import cx from 'classnames'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
-import Record from './recordmessage'
+// import Record from './recordmessage'
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages = [
   {
@@ -97,9 +97,8 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
             disabled={isGeneratingQuestion}
           />
 
-            {input.trim() === '' ? (
-              <Record handleStop={handleStop} />
-            ) : (
+            {/* {input.trim() === '' ? ( */}
+            {/* ) : ( */}
             <button
             className={cx(
               inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
@@ -118,7 +117,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
               </div>
             
           </button>
-            )}
+            {/* )} */}
         </div>
       </div>
     </div>

@@ -1,5 +1,9 @@
-import { CommandLineIcon, UserIcon } from '@heroicons/react/24/outline'
 
+'use client'
+import React, { useState } from 'react';
+import { CommandLineIcon, UserIcon } from '@heroicons/react/24/outline'
+import Recordicon from './recordicon'
+import LoadIcon from './loadicon'
 // loading placeholder animation for the chat line
 export const LoadingChatLine = () => (
   <div
@@ -26,12 +30,62 @@ const convertNewLines = (text) =>
   ))
 
 export function ChatLine({ role = 'assistant', content, isStreaming }) {
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   if (!content) {
     return null
   }
   const contentWithCursor = `${content}${isStreaming ? '▍' : ''}`
   const formatteMessage = convertNewLines(contentWithCursor)
 
+
+const speakAssistantMessage = (content) => {
+  setIsLoading(true); // Set loading to true when the button is clicked
+
+  // Create a SpeechSynthesisUtterance with the provided content
+  const assistantUtterance = new SpeechSynthesisUtterance(content);
+
+  // Speak the content using the Speech Synthesis API
+  window.speechSynthesis.speak(assistantUtterance);
+
+  // Now, send the text data to the backend using fetch API
+  const backendUrl = 'http://localhost:8000/api/text-audio'; // Replace with your actual backend API URL
+
+  fetch(backendUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: content }), // Assuming the backend expects the 'text' property in the request body
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    // Do something with the response from the backend if needed
+    console.log(data);
+    setIsLoading(false);
+    setIsPlaying(true);
+    // If the response contains the audio URL, play it in the background
+    if (data.msg) {
+
+      const audio = new Audio(data.msg);
+      audio.play().catch((error) => {
+        // Handle any error that occurs during audio playback
+        console.error('Error playing audio:', error);
+      });
+      
+      // Now, add an event listener for the "ended" event
+      audio.addEventListener('ended', () => {
+        setIsPlaying(false); // You can perform any action here
+      });
+
+    }
+  })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch
+      console.error('Error:', error);
+    });
+};
   return (
     <div
       className={
@@ -57,6 +111,22 @@ export function ChatLine({ role = 'assistant', content, isStreaming }) {
         <div className="prose whitespace-pre-wrap flex-1">
           {formatteMessage}
         </div>
+
+        {role === 'assistant' && (
+          <button
+            className="ml-2"
+            onClick={() => speakAssistantMessage(content)}
+            disabled={isPlaying || isLoading} // Disable the button when playing or waiting for response
+          >
+            {isLoading ?   <Recordicon  classText={
+                isPlaying === true
+                  ? "animate-pulse text-red-500"
+                  : "text-sky-500"
+              }
+            />:<LoadIcon/> 
+            }
+          </button>
+        )}
       </div>
     </div>
   )

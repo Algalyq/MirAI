@@ -149,7 +149,7 @@ const useMessages = () => {
       const url = 'https://backend-project-5m5f.onrender.com'
     
             
-        const response = await axios.post(`${url}/api/llm`, {
+        const response = await axios.post(`${backendUrl}/api/llm`, {
           query: lastUserMessage.content,
         }, {
           headers: {

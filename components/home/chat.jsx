@@ -82,7 +82,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
             aria-label="chat input"
             required
             className="m-0 w-full border-0 bg-transparent p-0 py-3 pl-4 pr-12 text-black"
-            placeholder="Type a message..."
+            placeholder="Жазу..."
             value={input}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {

@@ -11,7 +11,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@expo-google-fonts/krona-one": "^0.2.3",
     "@ffmpeg/ffmpeg": "^0.11.6",
+    "@fontsource/montserrat": "^5.0.5",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
     "@material-tailwind/react": "^2.0.6",

@@ -8,9 +8,12 @@ export const dynamic = 'force-dynamic';
  * Retrieves a random Jeopardy question
  */
 export async function GET() {
-  const res = await axios.get('https://jservice.io/api/random')
+  const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
+  const url = 'https://backend-project-5m5f.onrender.com'
+    
+  const res = await axios.get(`${backendUrl}/api/question`)
 
-  const question_data = res.data?.[0]
+  const question_data = res.data
 
   if (!question_data) {
     return NextResponse.json({
@@ -21,9 +24,6 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    id: question_data.id,
-    question: question_data.question,
-    category: question_data.category?.title || '',
-    answer: question_data.answer,
+    question: question_data.msg
   })
 }

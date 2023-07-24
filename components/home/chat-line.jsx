@@ -1,12 +1,12 @@
 'use client';
 require('dotenv').config();
 
-import React, { useState, useEffect } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import { CommandLineIcon, UserIcon } from '@heroicons/react/24/outline';
 import Recordicon from '../shared/icons/recordicon';
 import LoadIcon from '../shared/icons/loadicon';
 import PauseIcon from '../shared/icons/PauseIcon';
-
+import axios from 'axios'
 // loading placeholder animation for the chat line
 export const LoadingChatLine = () => (
   <div className="border-b border-black/10 bg-gray-50 text-gray-800">
@@ -27,86 +27,78 @@ const convertNewLines = (text) =>
       <br />
     </span>
   ));
-
-export function ChatLine({ role = 'assistant', content, isStreaming }) {
+  export function ChatLine({ role = 'assistant', content, isStreaming }) {
+  const [isButtonActive, setIsButtonActive] = useState(true);
+  const contentWithCursor = `${content}${isStreaming ? '▍' : ''}`;
+  const formatteMessage = convertNewLines(contentWithCursor);
+  const [audioElement, setAudioElement] = useState(null);
+  const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [audioElement, setAudioElement] = useState(null);
-  const [currentAudio, setCurrentAudio] = useState(null);
-
+    
   if (!content) {
     return null;
   }
+  
+  const handleAudioButtonClick = async (content) => {
+    try {
+      setIsLoading(true); // Set isLoading to true when sending the message
+      const handleAudioEnded = () => {
+        setIsPlaying(false);
+      };
+  
+      const payload = {
+        text: String(content)
+      };
+      const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
+      const url = 'https://backend-project-5m5f.onrender.com';
+  
+      const response = await axios.post(`${backendUrl}/api/audio`,payload);
+      setIsLoading(true)
+      if (!response.data) {
+        console.error('Empty response received from the server');
+        return;
+      }
 
-  const contentWithCursor = `${content}${isStreaming ? '▍' : ''}`;
-  const formatteMessage = convertNewLines(contentWithCursor);
+      const newAudio = new Audio(response.data["msg"]);
+      setIsLoading(false)
 
-  const pauseAudio = () => {
-    if (currentAudio) {
-      currentAudio.pause();
-      setIsPlaying(false);
+     
+
+
+
+      if (audioRef.current && audioRef.current.src!== newAudio.src) {
+  
+        audioRef.current.pause();
+        setIsPlaying(false)
+        audioRef.current.currentTime = 0;
+      }
+      if (audioRef.current && audioRef.current.src === newAudio.src) {
+        if (audioRef.current.paused) {
+          audioRef.current.play();
+          setIsPlaying(true)
+        } else {
+          setIsPlaying(false)
+          audioRef.current.pause();
+        }
+      } else {
+        newAudio.addEventListener('ended', handleAudioEnded);
+        newAudio.play();
+        setIsPlaying(true)
+        console.log('Started playing new audio.');
+        setAudioElement(newAudio);
+        audioRef.current = newAudio;
+        
+      }
+      
+        
+    } catch (error) {
+      console.error('Error while fetching or playing audio:', error);
+    }
+    finally{
+      setIsLoading(false); 
     }
   };
-
-  const speakAssistantMessage = (content) => {
-    setIsLoading(true); // Set loading to true when the button is clicked
-
-    // Create a SpeechSynthesisUtterance with the provided content
-    const assistantUtterance = new SpeechSynthesisUtterance(content);
-
-    // Speak the content using the Speech Synthesis API
-    window.speechSynthesis.speak(assistantUtterance);
-
-    // Now, send the text data to the backend using fetch API
-    const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
-    const url = 'https://backend-project-5m5f.onrender.com';
-
-    fetch(`${backendUrl}/api/audio`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text: content }), // Assuming the backend expects the 'text' property in the request body
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Do something with the response from the backend if needed
-        setIsLoading(false);
-        setIsPlaying(true);
-        // If the response contains the audio URL, play it in the background
-        if (data.msg) {
-          if (audioElement && !audioElement.paused) {
-            pauseAudio();
-          }
-          const audio = new Audio(data.msg);
-          audio.play().catch((error) => {
-            // Handle any error that occurs during audio playback
-            console.error('Error playing audio:', error);
-          });
-
-          // Now, add an event listener for the "ended" event
-          audio.addEventListener('ended', () => {
-            setIsPlaying(false); // You can perform any action here
-          });
-          setAudioElement(audio);
-          setCurrentAudio(audio);
-        }
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the fetch
-        console.error('Error:', error);
-      });
-  };
-
-  useEffect(() => {
-    return () => {
-      if (currentAudio && !currentAudio.paused) {
-        pauseAudio();
-      }
-    };
-  }, [currentAudio]);
-
-
   return (
     <div
       className={
@@ -130,23 +122,19 @@ export function ChatLine({ role = 'assistant', content, isStreaming }) {
         {role === 'assistant' && (
           <button
             className="ml-2"
-            onClick={() => {
-              if (isPlaying) {
-                pauseAudio();
-              } else {
-                speakAssistantMessage(content);
-              }
-            }}
+            onClick={() => handleAudioButtonClick(content)}
             disabled={isLoading}
           >
             {isLoading ? (
               <LoadIcon />
             ) : (
-              isPlaying ? <PauseIcon /> : <Recordicon
-                classText={
-                  isPlaying ? 'animate-pulse text-red-500' : 'text-sky-500'
-                }
-              />
+              isPlaying ?  
+              <PauseIcon />:
+              <Recordicon
+              classText={
+                isPlaying ? 'animate-pulse text-red-500' : 'text-sky-500'
+              }
+            />
             )}
           </button>
         )}

@@ -42,7 +42,7 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
       const question_data = res.data
 
       setQuestion(question_data)
-      setInput(`The category is "${question_data.category}". ${question_data.question}`)
+      setInput(`${question_data.question}`)
     } catch (err) {
       setQuestionError(err.message)
     } finally {
@@ -95,25 +95,25 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
             }}
             disabled={isGeneratingQuestion}
           />
-            <button
+       <button
             className={cx(
+              shouldShowLoadingIcon && "hover:bg-inherit hover:text-inhert",
               inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
-              "absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors"
-            )}
+              "absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors")}
             type="submit"
             onClick={() => {
-              sendMessage(input);
-              setInput('');
+              sendMessage(input)
+              setInput('')
             }}
-            disabled={input.trim() === ''}
+            disabled={shouldShowLoadingIcon}
           >
-            
-              <div className={cx(inputActive && "text-white", "w-6 h-6")}>
+            {shouldShowLoadingIcon
+              ? <div className="h-6 w-6 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+              : <div className={cx(inputActive && "text-white", "w-6 h-6")}>
                 <PaperAirplaneIcon />
               </div>
-            
+            }
           </button>
-            {/* )} */}
         </div>
       </div>
     </div>
@@ -126,8 +126,11 @@ const useMessages = () => {
   const [isMessageStreaming, setIsMessageStreaming] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingStates, setLoadingStates] = useState({});
 
   const sendMessage = async (newMessage) => {
+    
+
     setLoading(true);
     setError(null);
 
@@ -142,7 +145,10 @@ const useMessages = () => {
     .filter((message) => message.role === 'user')
     .pop();
     const last10messages = newMessages.slice(-10);
-
+    setLoadingStates((prevLoadingStates) => ({
+      ...prevLoadingStates,
+      [lastUserMessage.content]: true,
+    }));
     
     try {
       const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
@@ -161,7 +167,10 @@ const useMessages = () => {
     
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
         setLoading(true)
-
+        setLoadingStates((prevLoadingStates) => ({
+          ...prevLoadingStates,
+          [lastUserMessage.content]: false,
+        }));
       setIsMessageStreaming(false);
     } catch (error) {
       setError(error.message);
@@ -176,8 +185,11 @@ const useMessages = () => {
     loading,
     error,
     sendMessage,
+    loadingStates,
   };
 };
+
+
 
 
 export default function Chat() {
@@ -185,8 +197,8 @@ export default function Chat() {
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const { messages, isMessageStreaming, loading, error, sendMessage } = useMessages()
-
+  const { messages, isMessageStreaming, loading, error, sendMessage, loadingStates } =
+    useMessages();
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } =
@@ -218,6 +230,8 @@ export default function Chat() {
     }
   }, [error])
 
+
+
   return (
     <div className="flex-1 w-full border-zinc-100 bg-white overflow-hidden">
       <div
@@ -226,7 +240,12 @@ export default function Chat() {
         onScroll={handleScroll}
       >
         {messages.map(({ content, role }, index) => (
-          <ChatLine key={index} role={role} content={content} isStreaming={index === messages.length - 1 && isMessageStreaming} />
+          <ChatLine 
+          key={index} 
+          role={role} 
+          content={content} 
+          isStreaming={index === messages.length - 1 && isMessageStreaming} 
+         />
         ))}
 
         {loading && <LoadingChatLine />}

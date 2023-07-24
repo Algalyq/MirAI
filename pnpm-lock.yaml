@@ -5,9 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@expo-google-fonts/krona-one':
+    specifier: ^0.2.3
+    version: 0.2.3
   '@ffmpeg/ffmpeg':
     specifier: ^0.11.6
     version: 0.11.6
+  '@fontsource/montserrat':
+    specifier: ^5.0.5
+    version: 5.0.5
   '@headlessui/react':
     specifier: ^1.7.15
     version: 1.7.15(react-dom@18.2.0)(react@18.2.0)
@@ -190,6 +196,10 @@ packages:
       - supports-color
     dev: false
 
+  /@expo-google-fonts/krona-one@0.2.3:
+    resolution: {integrity: sha512-vAWp/kKs0TcUw/TT98Fzulag+rRNu0PPOnefoAK3Ftp1GFCMRqnj5tSdijcMICXxxAP7yNPxbntEE2Y8Hw+FvQ==}
+    dev: false
+
   /@ffmpeg/ffmpeg@0.11.6:
     resolution: {integrity: sha512-uN8J8KDjADEavPhNva6tYO9Fj0lWs9z82swF3YXnTxWMBoFLGq3LZ6FLlIldRKEzhOBKnkVfA8UnFJuvGvNxcA==}
     engines: {node: '>=12.16.1'}
@@ -234,6 +244,10 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tabbable: 6.2.0
+    dev: false
+
+  /@fontsource/montserrat@5.0.5:
+    resolution: {integrity: sha512-kR4hwC44p0GZQsy1oA2X8EdFMg/lC7qwVX9jNgNBQ+uSZXKoV4Vyc1VepcRAcGRKPIgcc/3OC1j7FNQDYpFLJA==}
     dev: false
 
   /@formatjs/ecma402-abstract@1.17.0:

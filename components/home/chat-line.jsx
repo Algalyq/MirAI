@@ -53,7 +53,7 @@ const convertNewLines = (text) =>
       const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
       const url = 'https://backend-project-5m5f.onrender.com';
   
-      const response = await axios.post(`${backendUrl}/api/audio`,payload);
+      const response = await axios.post(`${url}/api/audio`,payload);
       setIsLoading(true)
       if (!response.data) {
         console.error('Empty response received from the server');

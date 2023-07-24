@@ -11,7 +11,7 @@ export async function GET() {
   const backendUrl = 'http://localhost:8000'; // Replace with your actual backend API URL
   const url = 'https://backend-project-5m5f.onrender.com'
     
-  const res = await axios.get(`${backendUrl}/api/question`)
+  const res = await axios.get(`${url}/api/question`)
 
   const question_data = res.data
 

@@ -3,8 +3,8 @@ require('dotenv').config();
 
 import React, { useState, useEffect } from 'react';
 import { CommandLineIcon, UserIcon } from '@heroicons/react/24/outline';
-import Recordicon from './recordicon';
-import LoadIcon from './loadicon';
+import Recordicon from '../shared/icons/recordicon';
+import LoadIcon from '../shared/icons/loadicon';
 import PauseIcon from '../shared/icons/PauseIcon';
 
 // loading placeholder animation for the chat line

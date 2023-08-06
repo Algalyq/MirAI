@@ -17,7 +17,7 @@ export default function Landing() {
           style={{ animationDelay: "0.25s", animationFillMode: "forwards" }}
         >
           <Balancer>
-          Жасанды интеллектке негізделген MirAI сарапшысы, ол сіз қоятын кез келген сұрақтарға жауап бере алады.
+          Жасанды интеллект MirAI сарапшысы, ол сіз қоятын кез келген сұрақтарға жауап бере алады.
           </Balancer>
         </p>
 

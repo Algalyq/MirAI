@@ -11,16 +11,17 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 // import Record from './recordmessage'
 // default first message to display in UI (not necessary to define the prompt)
+
 export const initialMessages = [
   {
     role: 'system',
-    content: 'Сәлем! Мен MirAI жасанды интелекттімін. Сұрақтарыңызға жауап беремін!',
+    content: 'Sálem! Men MirAI jasandy ıntelekttimin. Suraqtaryńyzǵa jaýap beremin!',
   },
 ]
 
-
 const  BASE_URL  = process.env.OPENAI_API_KEY;
-console.log(BASE_URL)
+
+
 const InputMessage = ({ input, setInput, sendMessage, loading }) => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false)
   const [question, setQuestion] = useState(null)
@@ -65,58 +66,67 @@ const InputMessage = ({ input, setInput, sendMessage, loading }) => {
   }, [questionError])
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both">
-      <button
-        className="mx-auto flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black text-sm hover:opacity-50 disabled:opacity-25"
-        onClick={generateJeopardyQuestion}
-        disabled={isGeneratingQuestion}
-      >
-        <div className="w-4 h-4">
-          <AcademicCapIcon />
-        </div> {'Сұрақтарға мысал'}
-      </button>
-      <div className="mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl">
-        <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
-          <input
-            ref={inputRef}
-            aria-label="chat input"
-            required
-            className="m-0 w-full border-0 bg-transparent p-0 py-3 pl-4 pr-12 text-black"
-            placeholder="Жазу..."
-            value={input}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                sendMessage(input)
-                setInput('')
-              }
-            }}
-            onChange={(e) => {
-              setInput(e.target.value)
-            }}
-            disabled={isGeneratingQuestion}
-          />
-       <button
-            className={cx(
-              shouldShowLoadingIcon && "hover:bg-inherit hover:text-inhert",
-              inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
-              "absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors")}
-            type="submit"
-            onClick={() => {
-              sendMessage(input)
-              setInput('')
-            }}
-            disabled={shouldShowLoadingIcon}
-          >
-            {shouldShowLoadingIcon
-              ? <div className="h-6 w-6 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
-              : <div className={cx(inputActive && "text-white", "w-6 h-6")}>
-                <PaperAirplaneIcon />
-              </div>
-            }
-          </button>
-        </div>
-      </div>
+<div className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-transparent via-white to-white flex flex-col items-center clear-both">
+  <button
+    className="mx-auto flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black text-sm hover:opacity-50 disabled:opacity-25"
+    onClick={generateJeopardyQuestion}
+    disabled={isGeneratingQuestion}
+  >
+    <div className="w-4 h-4">
+      <AcademicCapIcon />
     </div>
+    {'Suraqtarǵa mysal'}
+  </button>
+  <div
+    className={`mx-2 my-4 flex-1 w-full md:mx-4 md:mb-[52px] lg:max-w-2xl xl:max-w-3xl ${
+      input.length > 130 ? "max-h-[130px] overflow-y-auto" : ""
+    }`}
+  >
+    <div className="relative mx-2 flex-1 flex-col rounded-md border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] sm:mx-4">
+      <input
+        ref={inputRef}
+        aria-label="chat input"
+        required
+        className="m-0 w-full border-0 bg-transparent p-0 py-3 pl-4 pr-12 text-black"
+        style={inputRef.current && inputRef.current.scrollHeight > 130 ? { marginBottom: "130px" } : {}}
+        placeholder="Jazý..."
+        value={input}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            sendMessage(input)
+            setInput('')
+          }
+        }}
+        onChange={(e) => {
+          setInput(e.target.value)
+        }}
+        disabled={isGeneratingQuestion}
+      />
+      <button
+        className={cx(
+          shouldShowLoadingIcon && "hover:bg-inherit hover:text-inhert",
+          inputActive && "bg-black hover:bg-neutral-800 hover:text-neutral-100",
+          "absolute right-2 bottom-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 transition-colors"
+        )}
+        type="submit"
+        onClick={() => {
+          sendMessage(input)
+          setInput('')
+        }}
+        disabled={shouldShowLoadingIcon}
+      >
+        {shouldShowLoadingIcon ? (
+          <div className="h-6 w-6 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+        ) : (
+          <div className={cx(inputActive && "text-white", "w-6 h-6")}>
+            <PaperAirplaneIcon />
+          </div>
+        )}
+      </button>
+    </div>
+  </div>
+</div>
+
   )
 }
 

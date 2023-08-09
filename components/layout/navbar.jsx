@@ -21,7 +21,12 @@ export default function NavBar({ session }) {
       >
         <div className="mx-5 flex h-16 max-w-screen-xl items-center justify-between xl:mx-auto">
           <Link href="/" className="flex items-center font-display text-3xl" style={{fontFamily: 'Krona One'}}>
-            <h3>MIRAI</h3>
+          <Image
+              src="/LogoV1.svg" // Replace with your image path
+              alt="Image Description"
+              width={90} // Set the desired width
+              height={100} // Set the desired height
+            />
           </Link>
           <div>
 
@@ -29,10 +34,10 @@ export default function NavBar({ session }) {
               <UserDropdown session={session} />
             ) : (
               <button
-                className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-black"
+                className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-black font-bold"
                 onClick={() => setShowSignInModal(true)}
               >
-                Тіркелу
+                 Tirkelý
               </button>
             )}
           </div>

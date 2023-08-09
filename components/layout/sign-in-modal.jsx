@@ -41,16 +41,16 @@ const SignInModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full overflow-hidden shadow-xl md:max-w-md md:rounded-2xl md:border md:border-gray-200 transition-all">
+              <Dialog.Panel className="w-full overflow-hidden shadow-xl md:max-w-md md:rounded-2xl md:border md:border-gray-200 transition-all Model" style={{width: '90%', borderRadius: '25px' }}>
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center md:px-16">
                   <Image
-                    src="/n17r.png"
+                    src="/LogoV1.svg"
                     alt="Logo"
-                    className="h-10 w-10 rounded-full"
-                    width={20}
-                    height={20}
+                    className="h-14 w-14 rounded-full"
+                    width={48}
+                    height={48} 
                   />
-                  <h3 className="font-display text-2xl font-bold">Тіркелу</h3>
+                  <h3 className="font-display text-2xl font-bold">Tirkelý</h3>
                 </div>
 
                 <div className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 md:px-16">
@@ -70,7 +70,7 @@ const SignInModal = ({
                     ) : (
                       <>
                         <Google className="h-5 w-5" />
-                        <p>Google арқылы тіркелу</p>
+                        <p className="font-medium">Google arqyly tirkelý</p>
                       </>
                     )}
                   </button>
@@ -82,6 +82,7 @@ const SignInModal = ({
       </Dialog>
     </Transition>
   );
+
 };
 
 export function useSignInModal() {

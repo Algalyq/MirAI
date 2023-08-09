@@ -1,0 +1,88 @@
+.pic-ctn {
+    position: relative;
+    width: 100vw;
+    height: 48px;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+  }
+  
+  .pic-ctn > h1 {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    animation: display 12s infinite;
+  }
+  @keyframes display {
+    0%, 15% {
+      transform: translateX(200px);
+      opacity: 0;
+    }
+    30% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    45%, 100% {
+      transform: translateX(-200px);
+      opacity: 0;
+    }
+  }
+  
+  /* Adjust the percentages based on your design and requirements */
+  @media (max-width: 768px) {
+
+    .Para{
+        margin-top: 12px;
+    }
+    @keyframes display {
+      0%, 10% {
+        transform: translateX(200px);
+        opacity: 0;
+      }
+      25% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      40%, 100% {
+        transform: translateX(-200px);
+        opacity: 0;
+      }
+    }
+  }
+  @media (max-width: 400px) {
+  
+    .Para{
+        margin-top: -4px;
+    }
+  }
+  
+
+  /* For smaller phone screens */
+  @media (max-width: 480px) {
+    @keyframes display {
+      0%, 5% {
+        transform: translateX(200px);
+        opacity: 0;
+      }
+      15% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      30%, 100% {
+        transform: translateX(-200px);
+        opacity: 0;
+      }
+    }
+  }
+  
+  
+  h1:nth-child(2) {
+    animation-delay: 3.5s;
+  }
+  h1:nth-child(3) {
+    animation-delay: 8s;
+  }
+  
